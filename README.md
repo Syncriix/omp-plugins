@@ -24,22 +24,23 @@ omp plugin install model-prompt@syncriix
 Then, inside OMP:
 
 ```text
-/model-prompt edit
+/model-prompt
 ```
 
-Write the extra instructions you want for the selected model, save, and send your next prompt. Your instructions are added to OMP's system prompt—not substituted for it.
+Search saved model prompts, preview a selection, and press **Enter** to edit it. The active model is included even without a saved prompt, and browsing does not switch models. Saved instructions are added to OMP's system prompt—not substituted for it—on your next prompt to that model.
 
 ## Plugin catalog
 
 | Plugin | What it does | Version |
 | --- | --- | --- |
-| [**model-prompt**](plugins/model-prompt/README.md) | Give each provider/model pair its own persistent Markdown instructions. | `0.1.0` |
+| [**model-prompt**](plugins/model-prompt/README.md) | Browse and edit persistent Markdown instructions for each provider/model pair. | `0.2.0` |
 
 The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers use `plugin@syncriix`; the scoped package name for model-prompt is `@syncriix/omp-model-prompt`.
 
 ### Why model-prompt?
 
 - **Instructions that follow the model.** Tune one provider/model pair without changing the others.
+- **Browse before you edit.** Search saved prompts and read a live preview without switching models.
 - **Ordinary Markdown.** Edit in OMP or your own editor; back up and sync the files with tools you already use.
 - **Additive, not a replacement.** Keep OMP's existing system-prompt blocks intact.
 

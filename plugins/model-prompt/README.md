@@ -39,16 +39,20 @@ Send your next prompt to use it. No restart is needed when changing prompt text.
 
 ## Commands
 
-All commands operate on the **currently selected provider/model pair**.
+Use the browser to manage saved prompts across models. Explicit subcommands operate on the **currently selected provider/model pair**.
 
 | Command | Action |
 | --- | --- |
-| `/model-prompt` | Open the prompt editor. |
+| `/model-prompt` | Browse saved prompts plus the active model, with search and a preview. |
 | `/model-prompt edit` | Create or edit the pair's Markdown addendum. |
 | `/model-prompt show` | View the saved addendum. |
 | `/model-prompt clear` | Confirm and remove the pair's saved addendum. |
 
-The editor and confirmation require an interactive UI. The custom viewer used by `show` is intended for OMP's terminal UI; it is not available through headless mode or the native RPC custom-UI surface. Use the `model_prompt_show` agent tool or read the Markdown file when a viewer is unavailable.
+In the browser, type to search provider, model, or prompt content. Search is case-insensitive; all space-separated terms must match. **Up/Down** selects a row and updates its preview; **Page Up/Page Down** scrolls the preview. **Enter** opens the selected prompt's editor; **Escape** closes the browser.
+
+Editing another model's prompt does **not** change OMP's active model. The active model is marked `[current]` and listed even without saved instructions. Wide terminals show the list and preview side by side; narrow terminals stack them.
+
+The editor and confirmation require an interactive UI. The browser and custom `show` viewer require OMP's terminal UI; they are unavailable in headless mode or the native RPC custom-UI surface. Use the `model_prompt_show` agent tool for the active model or read the Markdown files when custom UI is unavailable.
 
 ### Agent tools
 
@@ -71,6 +75,22 @@ At the start of each user prompt, the extension reads the file for OMP's current
 - **Same model ID, different provider:** separate files and separate instructions.
 
 Prompts are global to the active OMP agent directory, not tied to a project or conversation. Project-scoped plugin installation does not make its prompt storage project-scoped.
+
+### Status indicator
+
+`[+P]` indicates that the active model has a non-empty saved prompt. Status refreshes at session start, on a new user prompt, and after prompt commands; switching models is reflected on the next refresh.
+
+To place it between the model and path using OMP's native accent color, optionally configure a custom status line in your OMP settings:
+
+```yaml
+statusLine:
+  preset: custom
+  leftSegments: [model, status, path, git]
+  rightSegments: [context_pct, cost]
+  showHookStatus: false
+```
+
+This is an example layout, not a required replacement for your existing settings: retain your preferred segments and add `status` where you want it. `showHookStatus: false` hides the separate extension-status footer to avoid duplication. The plugin only supplies `[+P]`; it never rewrites your global layout.
 
 ## Storage and sync
 

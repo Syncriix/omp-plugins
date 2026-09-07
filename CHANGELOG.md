@@ -3,6 +3,19 @@
 Notable user-visible changes to this marketplace and its plugins are recorded here.
 Plugins are versioned independently; refreshing the catalog does not upgrade installed code.
 
+## Model Prompt 0.2.0 — 2026-09-07
+
+### Added
+
+- Helm-style searchable prompt browser for bare `/model-prompt`, listing saved prompts plus the active model.
+- Selection preview with side-by-side panes on wide terminals and a stacked layout on narrow terminals; search covers provider, model, and prompt content.
+- Edit the selected prompt with Enter without changing OMP's active model.
+
+### Changed
+
+- Bare `/model-prompt` opens the browser instead of going straight to the editor. Explicit `edit`, `show`, and `clear` still target the active model.
+- Compact `[+P]` status text, with optional placement through OMP's native custom status segment; the plugin does not change global status-line layout settings.
+
 ## Model Prompt 0.1.0 — 2026-09-07
 
 Initial public release of `model-prompt@syncriix`, an OMP adaptation of

@@ -24,7 +24,7 @@ installed plugins run inside OMP and do not require a separate Node.js or Bun in
 ```sh
 git clone https://github.com/Syncriix/omp-plugins.git
 cd omp-plugins
-node --test plugins/model-prompt/test/edits.test.ts
+node --test plugins/model-prompt/test/*.test.ts
 ```
 
 To load your working copy for a manual check, use the absolute path to its entrypoint:
@@ -48,6 +48,7 @@ For Model Prompt changes, check the relevant parts of this workflow:
 4. Verify instructions apply on the next user prompt without replacing OMP's base prompt.
 5. Confirm `/model-prompt clear` removes only the selected pair's prompt after confirmation.
 6. For editing-tool changes, verify successful replacements and that a rejected batch leaves the file unchanged.
+7. Open `/model-prompt`, search and preview saved prompts, then edit another model's prompt and confirm OMP's active model is unchanged.
 
 An authenticated model is required if you test actual provider requests; those requests may
 use your subscription quota or incur API charges. Do not commit test profiles or prompt files.

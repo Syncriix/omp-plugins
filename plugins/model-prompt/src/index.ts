@@ -14,7 +14,7 @@
  * Upstream commit: 074b766f03f12c4851829bee095bc6640954cbed
  */
 
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { Api, Model } from "@oh-my-pi/pi-ai";
 import type {
@@ -36,6 +36,7 @@ import {
 	visibleWidth,
 } from "@mariozechner/pi-tui";
 import { applyExactEdits, type ModelPromptEditInput } from "./edits";
+import { showModelPromptBrowser, type PromptBrowserEntry } from "./browser";
 
 interface ModelPromptInfo {
 	provider: string;
@@ -73,11 +74,11 @@ function encodePathSegment(value: string): string {
 	return encodeURIComponent(value);
 }
 
-function getModelPromptPath(model: Model<Api>): string {
+function getModelPromptPath(model: Pick<Model<Api>, "provider" | "id">): string {
 	return join(getAgentDir(), "model-prompts", model.provider, `${encodePathSegment(model.id)}.md`);
 }
 
-async function loadModelPromptInfo(model: Model<Api> | undefined): Promise<ModelPromptInfo | undefined> {
+async function loadModelPromptInfo(model: Pick<Model<Api>, "provider" | "id"> | undefined): Promise<ModelPromptInfo | undefined> {
 	if (!model) {
 		return undefined;
 	}
@@ -108,6 +109,40 @@ async function loadModelPromptInfo(model: Model<Api> | undefined): Promise<Model
 		}
 		throw error;
 	}
+}
+
+async function listModelPrompts(current: Model<Api> | undefined): Promise<ModelPromptInfo[]> {
+	const root = join(getAgentDir(), "model-prompts");
+	const prompts = new Map<string, ModelPromptInfo>();
+	let providers;
+	try {
+		providers = await readdir(root, { withFileTypes: true });
+	} catch (error) {
+		if (!(error instanceof Error && "code" in error && error.code === "ENOENT")) throw error;
+		providers = [];
+	}
+	for (const provider of providers) {
+		if (!provider.isDirectory()) continue;
+		const files = await readdir(join(root, provider.name), { withFileTypes: true });
+		for (const file of files) {
+			if (!file.isFile() || !file.name.endsWith(".md")) continue;
+			let modelId: string;
+			try {
+				modelId = decodeURIComponent(file.name.slice(0, -3));
+			} catch {
+				continue;
+			}
+			const info = await loadModelPromptInfo({ provider: provider.name, id: modelId });
+			if (info?.exists) prompts.set(info.label, info);
+		}
+	}
+	const active = await loadModelPromptInfo(current);
+	if (active) prompts.set(active.label, active);
+	return [...prompts.values()].sort((a, b) => {
+		if (a.label === active?.label) return -1;
+		if (b.label === active?.label) return 1;
+		return a.label.localeCompare(b.label);
+	});
 }
 
 function requireModelPromptInfo(info: ModelPromptInfo | undefined): ModelPromptInfo {
@@ -323,7 +358,7 @@ async function showModelPromptEditor(ctx: ExtensionContext, info: ModelPromptInf
 async function updateStatus(ctx: ExtensionContext, model: Model<Api> | undefined): Promise<void> {
 	const info = await loadModelPromptInfo(model);
 	if (info?.hasContent) {
-		ctx.ui.setStatus("model-prompt", ctx.ui.theme.fg("accent", "model-prompt"));
+		ctx.ui.setStatus("model-prompt", "[+P]");
 	} else {
 		ctx.ui.setStatus("model-prompt", undefined);
 	}
@@ -471,10 +506,29 @@ export default function modelPromptExtension(pi: ExtensionAPI) {
 	});
 
 	pi.registerCommand("model-prompt", {
-		description: "Edit, show, or clear the current global model prompt addendum",
+		description: "Browse, edit, show, or clear model prompt addenda",
 		handler: async (args, ctx) => {
-			const info = requireModelPromptInfo(await loadModelPromptInfo(ctx.model));
 			const subcommand = args.trim();
+			let info: ModelPromptInfo;
+			if (subcommand === "") {
+				const prompts = await listModelPrompts(ctx.model);
+				const entries: PromptBrowserEntry[] = prompts.map(prompt => ({
+					key: prompt.label,
+					label: prompt.label,
+					provider: prompt.provider,
+					modelId: prompt.modelId,
+					path: prompt.path,
+					content: prompt.content,
+					current: prompt.provider === ctx.model?.provider && prompt.modelId === ctx.model?.id,
+				}));
+				const selected = await showModelPromptBrowser(ctx, entries);
+				if (!selected) return;
+				const choice = prompts.find(prompt => prompt.label === selected);
+				if (!choice) return;
+				info = requireModelPromptInfo(await loadModelPromptInfo({ provider: choice.provider, id: choice.modelId }));
+			} else {
+				info = requireModelPromptInfo(await loadModelPromptInfo(ctx.model));
+			}
 
 			if (subcommand === "show") {
 				await showModelPromptViewer(ctx, info);
@@ -543,7 +597,7 @@ export default function modelPromptExtension(pi: ExtensionAPI) {
 
 	pi.on("before_agent_start", async (event, ctx) => {
 		const info = await loadModelPromptInfo(ctx.model);
-		ctx.ui.setStatus("model-prompt", info?.hasContent ? ctx.ui.theme.fg("accent", "model-prompt") : undefined);
+		ctx.ui.setStatus("model-prompt", info?.hasContent ? "[+P]" : undefined);
 		if (!info?.hasContent) {
 			return undefined;
 		}
