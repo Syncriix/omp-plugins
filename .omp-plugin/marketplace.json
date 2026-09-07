@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "syncriix",
+  "owner": {
+    "name": "Syncriix"
+  },
+  "metadata": {
+    "description": "Focused plugins for Oh My Pi.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "model-prompt",
+      "source": "./plugins/model-prompt",
+      "description": "Per-provider, per-model Markdown prompt addenda for Oh My Pi.",
+      "version": "0.1.0",
+      "homepage": "https://github.com/Syncriix/omp-plugins/tree/main/plugins/model-prompt",
+      "repository": "https://github.com/Syncriix/omp-plugins",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["omp", "prompts", "models", "markdown"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@syncriix/omp-model-prompt",
+  "version": "0.1.0",
+  "description": "Native Oh My Pi per-model prompt addenda with an interactive editor and agent tools.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Luke Melnik",
+  "contributors": ["Syncriix"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Syncriix/omp-plugins.git",
+    "directory": "plugins/model-prompt"
+  },
+  "homepage": "https://github.com/Syncriix/omp-plugins/tree/main/plugins/model-prompt",
+  "bugs": "https://github.com/Syncriix/omp-plugins/issues",
+  "keywords": ["omp-plugin", "omp-extension", "model-prompt", "prompt"],
+  "files": ["src", "LICENSE", "README.md"],
+  "omp": {
+    "extensions": ["./src/index.ts"]
+  },
+  "upstream": {
+    "name": "@lukemelnik/pi-model-prompt",
+    "version": "0.1.0",
+    "repository": "https://github.com/lukemelnik/pi-model-prompt",
+    "gitHead": "074b766f03f12c4851829bee095bc6640954cbed"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}
