@@ -1,0 +1,75 @@
+name: Bug report
+description: Report a reproducible problem with a marketplace plugin.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve OMP Plugins. Please check existing issues first.
+        Do not include credentials, private prompts, or unredacted session dumps.
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin and version
+      description: Include the installed plugin version shown by `omp plugin list`.
+      placeholder: model-prompt 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: omp_version
+    attributes:
+      label: OMP version
+      description: Output of `omp --version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and interface
+      placeholder: Windows 11, Windows Terminal, OMP TUI
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation method
+      options:
+        - Marketplace — user scope
+        - Marketplace — project scope
+        - Working copy via --extension
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest sequence that demonstrates the problem. Use harmless sample prompt text.
+      placeholder: |
+        1. Select a model.
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Relevant errors or screenshots
+      description: Optional. Redact account details, filesystem paths, credentials, and private prompt content before sharing.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Optional. Mention other extensions involved, workarounds, or the last version that worked.

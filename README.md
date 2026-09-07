@@ -72,22 +72,15 @@ If installed in both scopes, specify `--scope user` or `--scope project` when un
 
 ## Contributing
 
-[Issues](https://github.com/Syncriix/omp-plugins/issues) and [pull requests](https://github.com/Syncriix/omp-plugins/pulls) are welcome. For a bug, include your OMP version, the affected plugin, and a small reproduction—never credentials or private prompt content.
+[Issues](https://github.com/Syncriix/omp-plugins/issues) and [pull requests](https://github.com/Syncriix/omp-plugins/pulls) are welcome. Start with the [contribution guide](CONTRIBUTING.md) for local setup, tests, and verification.
 
-Keep plugins focused, document user-visible behavior, and preserve upstream attribution when porting existing work. This repository contains plugin code and public documentation, not personal OMP configuration.
+Use the [bug report](https://github.com/Syncriix/omp-plugins/issues/new?template=bug_report.yml) or [feature request](https://github.com/Syncriix/omp-plugins/issues/new?template=feature_request.yml) form. Never include credentials or private prompt content.
 
-For development, use **Node.js 24 or newer** to run the focused edit-behavior tests from the repository root:
-
-```sh
-node --test plugins/model-prompt/test/edits.test.ts
-```
-
-Node.js is a development-only prerequisite; installed plugins run inside OMP.
+See the [changelog](CHANGELOG.md) for releases and [authors](AUTHORS.md) for provenance and credits.
 
 ## Credits and license
 
 - **Original plugin:** [pi-model-prompt](https://github.com/lukemelnik/pi-model-prompt) by **Luke Melnik**, MIT licensed. Original copyright is preserved in the [plugin license](plugins/model-prompt/LICENSE).
 - **OMP port and marketplace:** [Sync / Syncriix](https://github.com/Syncriix), [MIT](LICENSE).
-- **README presentation inspiration:** [Whisper Local](https://github.com/drajb/whisper-local).
 
 This is an independent community marketplace, not an official OMP distribution.

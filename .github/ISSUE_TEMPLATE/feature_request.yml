@@ -1,0 +1,40 @@
+name: Feature request
+description: Propose a focused improvement or a new plugin.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you want to solve. An implementation proposal is welcome, but not required.
+        Check existing issues first, and keep private prompts and credentials out of examples.
+  - type: input
+    id: area
+    attributes:
+      label: Affected plugin or area
+      placeholder: model-prompt, marketplace, or a proposed new plugin
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe your workflow and what is difficult or missing today.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired behavior
+      description: What should the user be able to do? A small example helps.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional. Existing OMP features, other plugins, or your current workaround.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Implementation or upstream reference
+      description: Optional. Link related work or describe a possible approach. For an existing plugin port, include its repository and license if known.
