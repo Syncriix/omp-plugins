@@ -1,0 +1,23 @@
+{
+  "name": "@syncriix/omp-strip-autonomy-push",
+  "version": "0.1.0",
+  "description": "Removes OMP's built-in keep-going/don't-ask lines from the main session's system prompt.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Syncriix",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Syncriix/omp-plugins.git",
+    "directory": "plugins/strip-autonomy-push"
+  },
+  "homepage": "https://github.com/Syncriix/omp-plugins/tree/main/plugins/strip-autonomy-push",
+  "bugs": "https://github.com/Syncriix/omp-plugins/issues",
+  "keywords": ["omp-plugin", "omp-extension", "system-prompt", "collaboration"],
+  "files": ["src", "LICENSE", "README.md"],
+  "omp": {
+    "extensions": ["./src/index.ts"]
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  }
+}

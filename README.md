@@ -34,8 +34,9 @@ Search saved model prompts, preview a selection, and press **Enter** to edit it.
 | Plugin | What it does | Version |
 | --- | --- | --- |
 | [**model-prompt**](plugins/model-prompt/README.md) | Browse and edit persistent Markdown instructions for each provider/model pair. | `0.2.0` |
+| [**strip-autonomy-push**](plugins/strip-autonomy-push/README.md) | Remove OMP's built-in keep-going/don't-ask lines from the main session, so the agent checks in instead of pushing on. | `0.1.0` |
 
-The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers use `plugin@syncriix`; the scoped package name for model-prompt is `@syncriix/omp-model-prompt`.
+The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers use `plugin@syncriix`; scoped package names follow `@syncriix/omp-<plugin>`, such as `@syncriix/omp-model-prompt`.
 
 ### Why model-prompt?
 
@@ -45,6 +46,10 @@ The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers u
 - **Additive, not a replacement.** Keep OMP's existing system-prompt blocks intact.
 
 This is a native OMP port of [Luke Melnik's pi-model-prompt](https://github.com/lukemelnik/pi-model-prompt). See the [plugin guide](plugins/model-prompt/README.md) for commands, storage, privacy, and port details.
+
+### Why strip-autonomy-push?
+
+OMP tells every agent that finishing the task is the only reason to stop, to act rather than ask, and to verify changes before yielding. That suits an agent working alone, not one you are thinking alongside. This plugin removes those three lines from the main session and leaves subagents as they are. See the [plugin guide](plugins/strip-autonomy-push/README.md) for exactly what it matches and its limits.
 
 ## Manage your installation
 

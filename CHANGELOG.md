@@ -3,6 +3,21 @@
 Notable user-visible changes to this marketplace and its plugins are recorded here.
 Plugins are versioned independently; refreshing the catalog does not upgrade installed code.
 
+## Strip Autonomy Push 0.1.0 — 2026-11-06
+
+Initial release of `strip-autonomy-push@syncriix`.
+
+### Added
+
+- Removes OMP's three "keep going, don't ask" lines from the main session's system prompt at the start of each turn; subagents keep them.
+- Drops the `<critical>` block when it is left empty; other lines and blocks are untouched.
+- Warns once per session when none of the lines are found, which usually means OMP reworded them.
+- Matching regression tests, run by the existing test workflow.
+
+### Compatibility
+
+- Verified with OMP 18.16.0 on Windows. Other OMP versions and operating systems were not runtime-tested.
+
 ## Model Prompt 0.2.0 — 2026-09-07
 
 ### Added
@@ -48,6 +63,7 @@ Initial public release of `model-prompt@syncriix`, an OMP adaptation of
 ```sh
 omp plugin marketplace update syncriix
 omp plugin upgrade model-prompt@syncriix
+omp plugin upgrade strip-autonomy-push@syncriix
 ```
 
 Restart OMP after upgrading extension code. Editing prompt text requires only a new user prompt.

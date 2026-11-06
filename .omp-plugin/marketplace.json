@@ -19,6 +19,17 @@
       "license": "MIT",
       "category": "productivity",
       "keywords": ["omp", "prompts", "models", "markdown"]
+    },
+    {
+      "name": "strip-autonomy-push",
+      "source": "./plugins/strip-autonomy-push",
+      "description": "Removes OMP's built-in keep-going/don't-ask lines from the main session's system prompt.",
+      "version": "0.1.0",
+      "homepage": "https://github.com/Syncriix/omp-plugins/tree/main/plugins/strip-autonomy-push",
+      "repository": "https://github.com/Syncriix/omp-plugins",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["omp", "system-prompt", "collaboration"]
     }
   ]
 }

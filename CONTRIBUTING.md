@@ -24,7 +24,7 @@ installed plugins run inside OMP and do not require a separate Node.js or Bun in
 ```sh
 git clone https://github.com/Syncriix/omp-plugins.git
 cd omp-plugins
-node --test plugins/model-prompt/test/*.test.ts
+node --test plugins/*/test/*.test.ts
 ```
 
 To load your working copy for a manual check, use the absolute path to its entrypoint:

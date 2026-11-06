@@ -2,7 +2,7 @@
 
 ## Marketplace and OMP adaptation
 
-**[Sync / Syncriix](https://github.com/Syncriix)** maintains this marketplace and the OMP adaptation of Model Prompt.
+**[Sync / Syncriix](https://github.com/Syncriix)** maintains this marketplace and the OMP adaptation of Model Prompt, and wrote Strip Autonomy Push.
 
 Marketplace documentation and original repository work are covered by the [root MIT license](LICENSE).
 
