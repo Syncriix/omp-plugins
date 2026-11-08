@@ -160,7 +160,7 @@ export default function youtubeExtension(pi: ExtensionAPI) {
 				lines.push(
 					`subtitles: ${t.language} (${t.auto ? "auto-generated; names and terms may be misheard" : "manual"})`,
 					`transcript_file: ${t.path}`,
-					`transcript_size: ${t.chars} chars, ${t.paragraphs} paragraphs (one per line, blank lines between)`,
+					`transcript_size: chars=${t.chars} paragraphs=${t.paragraphs} (one paragraph per line, blank lines between)`,
 				);
 			}
 			return {
