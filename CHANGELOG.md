@@ -19,7 +19,8 @@ Initial release of `youtube@syncriix`, licensed BEERWARE-MIT.
 - Picks subtitles in the spoken language: a manual track, then YouTube's original auto-generated track (never a machine translation), then English.
 - Transcripts in paragraphs of about 30 seconds, each stamped with its start time; rolling auto-caption repeats and word-timing tags are removed.
 - Saves to `~/downloads/youtube` by default, named `<title> [<video id>] [<omp session id>]`; raw `.vtt` files are kept only next to a downloaded video.
-- Bundled `yt` skill that points the agent at the tool, the transcript, and the no-search limit.
+- Results written for the calling model: `key: value` metadata (title, channel, duration, subtitle track and whether it is auto-generated) with each transcript's path and size; the transcript is never inlined, so the model reads or greps only what it needs. Errors name the next step.
+- Bundled `yt` skill with the invocation path (top-level or `xd://` device), the no-search rule, and how to read and cite the result.
 - Track selection and transcript regression tests, run by the existing test workflow.
 
 ### Compatibility

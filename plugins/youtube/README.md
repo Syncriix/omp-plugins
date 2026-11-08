@@ -38,6 +38,8 @@ Any single-video link works: `watch?v=`, `youtu.be/`, `shorts/`, `live/`, `embed
 
 Files are named `<title> [<video id>] [<omp session id>].<ext>`, so each download traces back to the session that fetched it. The transcript is `….<lang>.txt`; with `video: true`, the `.mp4` and the raw `.vtt` subtitles sit beside it.
 
+The tool answers the model, not a person: `key: value` lines with title, channel, duration, the subtitle track and whether it is auto-generated, and each file's path. The transcript is never put into the conversation; `transcript_size` (characters and paragraphs, one per line) lets the model choose to read it whole, read a range, or grep it. Errors say what to do next; a search string, for example, tells the model to get a link from the user or from web search.
+
 ## Transcripts
 
 The tool first reads the video's metadata and picks the track in the language the video is spoken in: a manual caption track if one exists, otherwise YouTube's original auto-generated track (`-orig`, never a machine translation). If neither exists, it falls back to English.

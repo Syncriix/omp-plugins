@@ -4,27 +4,37 @@
  * Registers `youtube_download`: fetches one video's transcript with yt-dlp, and
  * the video itself on request (mp4, at most 1080p). Subtitles are taken in the
  * language the video is spoken in (manual captions where they exist, the
- * original auto-generated track otherwise, then English) and converted into a
- * timestamped plain-text transcript the agent can read.
+ * original auto-generated track otherwise, then English) and converted into
+ * timestamped paragraphs.
+ *
+ * The result is written for the calling model: metadata as `key: value` lines
+ * with each transcript's path and size, never the transcript itself, so the
+ * model chooses to read it whole, read a range, or grep it. Errors say what to
+ * do next.
  *
  * yt-dlp runs twice: once for the metadata, which decides the subtitle track
- * and rejects playlist and channel URLs, then with that metadata loaded back
- * in to download. yt-dlp must be on PATH.
+ * and rejects playlist, channel and search inputs, then with that metadata
+ * loaded back in to download. yt-dlp must be on PATH.
  */
 import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent";
 import { type CaptionInfo, pickSubtitleLanguage } from "./languages";
-import { vttToTranscript } from "./transcript";
+import { formatTime, vttToTranscript } from "./transcript";
 
 const DEFAULT_DIR = join(homedir(), "downloads", "youtube");
 const STDERR_TAIL = 2000;
+const NOT_A_VIDEO =
+	"Not a single video link or id. This tool cannot search YouTube: ask the user for the link, or find it with web search and confirm it with the user.";
 
 interface VideoInfo extends CaptionInfo {
 	_type?: string;
 	id?: string;
 	title?: string;
+	channel?: string;
+	uploader?: string;
+	duration?: number;
 }
 
 export default function youtubeExtension(pi: ExtensionAPI) {
@@ -33,11 +43,12 @@ export default function youtubeExtension(pi: ExtensionAPI) {
 	async function ytdlp(args: string[], signal: AbortSignal | undefined, cwd: string): Promise<string> {
 		const result = await pi.exec("yt-dlp", args, { signal, cwd }).catch((error: unknown) => {
 			if (/ENOENT|not found/i.test(String(error))) {
-				throw new Error("yt-dlp is not installed or not on PATH. Install it (https://github.com/yt-dlp/yt-dlp) and retry.");
+				throw new Error("yt-dlp is not installed or not on PATH; tell the user to install it.");
 			}
 			throw error;
 		});
 		if (result.killed) throw new Error("Download cancelled.");
+		if (/is not a valid URL/.test(result.stderr)) throw new Error(NOT_A_VIDEO);
 		if (result.code !== 0) {
 			throw new Error(`yt-dlp exited with code ${result.code}:\n${result.stderr.slice(-STDERR_TAIL).trim()}`);
 		}
@@ -48,20 +59,19 @@ export default function youtubeExtension(pi: ExtensionAPI) {
 		name: "youtube_download",
 		label: "YouTube Download",
 		description: [
-			"Fetch a single YouTube video's transcript, and optionally the video (mp4, at most 1080p).",
-			"Accepts any video link form: watch, youtu.be, shorts, live, embed, m./music. hosts, youtube-nocookie, links with t= or list= parameters, or a bare 11-character video id. It cannot search: search strings, playlist and channel URLs are rejected.",
-			"Subtitles default to the language the video is spoken in, falling back to English.",
-			"Writes `<title> [<id>] [<session>].<lang>.txt`, a transcript in timestamped paragraphs, plus the `.mp4` and `.vtt` when video=true.",
+			"Fetch one YouTube video's transcript by link or id; optionally download the video as mp4 (at most 1080p).",
+			"Input: any single-video link (watch, youtu.be, shorts, live, embed, m./music. hosts, youtube-nocookie, with t= or list= parameters) or an 11-character id. Cannot search; playlists and channels are rejected.",
+			"Subtitles: the spoken language (manual track, else the original auto-generated one), else English.",
+			"Returns metadata as key: value lines, including transcript_file and transcript_size; the transcript is never inlined. Read the file whole, by line range, or grep it: one [m:ss] paragraph per line.",
 		].join("\n"),
 		parameters: Type.Object({
-			url: Type.String({ description: "Video URL or id." }),
+			url: Type.String({ description: "Single-video link or 11-character id." }),
 			video: Type.Optional(
-				Type.Boolean({ description: "Also download the video file. Default false: transcript only." }),
+				Type.Boolean({ description: "Also download the video file. Default false: transcript only. Set true only when the user wants the file." }),
 			),
 			languages: Type.Optional(
 				Type.String({
-					description:
-						'Override subtitle languages, in yt-dlp --sub-langs syntax, e.g. "en" or "de,en". Default: the spoken language, then English.',
+					description: 'Override subtitle languages in yt-dlp --sub-langs syntax, e.g. "en" or "de,en". Omit to get the spoken language.',
 				}),
 			),
 			dir: Type.Optional(
@@ -81,13 +91,12 @@ export default function youtubeExtension(pi: ExtensionAPI) {
 				ctx.cwd,
 			);
 			const info = JSON.parse(infoJson) as VideoInfo;
-			if (info._type === "playlist" || !info.id) {
-				throw new Error("That is a playlist or channel URL; youtube_download fetches single videos. Pass a video link.");
-			}
+			if (info._type === "playlist" || !info.id) throw new Error(NOT_A_VIDEO);
 			const { id } = info;
 			const title = info.title ?? id;
 			const languages = params.languages ?? pickSubtitleLanguage(info);
-			if (!languages && !video) throw new Error(`"${title}" [${id}] has no subtitles.`);
+			const noSubtitles = `"${title}" [${id}] has no subtitles${params.languages ? ` in "${params.languages}"` : ""}, so there is no transcript. Do not infer its content from the title or memory.`;
+			if (!languages && !video) throw new Error(noSubtitles);
 
 			const tmp = await mkdtemp(join(tmpdir(), "omp-youtube-"));
 			let stdout: string;
@@ -120,29 +129,48 @@ export default function youtubeExtension(pi: ExtensionAPI) {
 			// Only video runs use --print, which keeps yt-dlp's stdout to the printed path.
 			const videoPath = video ? stdout.split("\n").find(line => line.trim() !== "") : undefined;
 
-			const transcripts: Array<{ path: string; paragraphs: number }> = [];
+			const marker = `[${id}] [${session}].`;
+			const transcripts: Array<{ path: string; language: string; auto: boolean; chars: number; paragraphs: number }> = [];
 			for (const name of (await readdir(dir)).sort()) {
-				if (!name.includes(`[${id}] [${session}].`) || !name.endsWith(".vtt")) continue;
+				if (!name.includes(marker) || !name.endsWith(".vtt")) continue;
 				const vttPath = join(dir, name);
+				const language = name.slice(name.indexOf(marker) + marker.length, -".vtt".length);
 				const text = vttToTranscript(await readFile(vttPath, "utf8"));
 				const path = `${vttPath.slice(0, -".vtt".length)}.txt`;
 				await writeFile(path, text);
 				if (!video) await rm(vttPath);
-				transcripts.push({ path, paragraphs: text === "" ? 0 : text.split("\n\n").length });
+				// yt-dlp takes the manual track whenever one exists for the requested key.
+				transcripts.push({
+					path,
+					language,
+					auto: !(info.subtitles && language in info.subtitles),
+					chars: text.length,
+					paragraphs: text === "" ? 0 : text.split("\n\n").length,
+				});
 			}
-			if (!video && transcripts.length === 0) {
-				throw new Error(`No subtitles in "${languages}" for "${title}" [${id}].`);
-			}
+			if (!video && transcripts.length === 0) throw new Error(noSubtitles);
 
-			const lines = [`"${title}" [${id}]`];
-			if (videoPath) lines.push(`Video: ${videoPath}`);
+			const lines = [`title: ${title}`, `id: ${id}`];
+			const channel = info.channel ?? info.uploader;
+			if (channel) lines.push(`channel: ${channel}`);
+			if (info.duration) lines.push(`duration: ${formatTime(Math.round(info.duration))}`);
+			if (videoPath) lines.push(`video_file: ${videoPath}`);
+			if (transcripts.length === 0) lines.push("subtitles: none");
 			for (const t of transcripts) {
-				lines.push(`Transcript: ${t.path} (${t.paragraphs} paragraph${t.paragraphs === 1 ? "" : "s"})`);
+				lines.push(
+					`subtitles: ${t.language} (${t.auto ? "auto-generated; names and terms may be misheard" : "manual"})`,
+					`transcript_file: ${t.path}`,
+					`transcript_size: ${t.chars} chars, ${t.paragraphs} paragraphs (one per line, blank lines between)`,
+				);
 			}
-			if (transcripts.length === 0) lines.push("No subtitles.");
 			return {
 				content: [{ type: "text", text: lines.join("\n") }],
-				details: { id, title, video: videoPath ?? null, transcripts },
+				details: {
+					id,
+					title,
+					video: videoPath ?? null,
+					transcripts,
+				},
 			};
 		},
 	});
