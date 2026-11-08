@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Removes OMP's built-in keep-going/don't-ask lines from the main session's system prompt.",
   "type": "module",
-  "license": "MIT",
+  "license": "BEERWARE-MIT",
   "author": "Syncriix",
   "repository": {
     "type": "git",

@@ -35,6 +35,7 @@ Search saved model prompts, preview a selection, and press **Enter** to edit it.
 | --- | --- | --- |
 | [**model-prompt**](plugins/model-prompt/README.md) | Browse and edit persistent Markdown instructions for each provider/model pair. | `0.2.0` |
 | [**strip-autonomy-push**](plugins/strip-autonomy-push/README.md) | Remove OMP's built-in keep-going/don't-ask lines from the main session, so the agent checks in instead of pushing on. | `0.1.0` |
+| [**youtube**](plugins/youtube/README.md) | Fetch YouTube transcripts in the spoken language as timestamped paragraphs, and videos as mp4 on request; a tiny `yt` skill tells the agent when to use it. | `0.1.0` |
 
 The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers use `plugin@syncriix`; scoped package names follow `@syncriix/omp-<plugin>`, such as `@syncriix/omp-model-prompt`.
 
@@ -50,6 +51,10 @@ This is a native OMP port of [Luke Melnik's pi-model-prompt](https://github.com/
 ### Why strip-autonomy-push?
 
 OMP tells every agent that finishing the task is the only reason to stop, to act rather than ask, and to verify changes before yielding. That suits an agent working alone, not one you are thinking alongside. This plugin removes those three lines from the main session and leaves subagents as they are. See the [plugin guide](plugins/strip-autonomy-push/README.md) for exactly what it matches and its limits.
+
+### Why youtube?
+
+Raw YouTube auto-captions repeat every line two or three times inside word-timing tags, which wastes context and buries the text. This plugin fetches the subtitles in the language the video is spoken in and writes a transcript in timestamped paragraphs, so the agent can summarize, quote, and cite moments. It fetches only the transcript unless you want the video file. See the [plugin guide](plugins/youtube/README.md) for parameters and limits.
 
 ## Manage your installation
 
@@ -87,6 +92,7 @@ See the [changelog](CHANGELOG.md) for releases and [authors](AUTHORS.md) for pro
 ## Credits and license
 
 - **Original plugin:** [pi-model-prompt](https://github.com/lukemelnik/pi-model-prompt) by **Luke Melnik**, MIT licensed. Original copyright is preserved in the [plugin license](plugins/model-prompt/LICENSE).
-- **OMP port and marketplace:** [Sync / Syncriix](https://github.com/Syncriix), [MIT](LICENSE).
+- **OMP port:** [Sync / Syncriix](https://github.com/Syncriix), MIT like the original, in the same [plugin license](plugins/model-prompt/LICENSE).
+- **Marketplace, strip-autonomy-push and youtube:** [Sync / Syncriix](https://github.com/Syncriix), [BEERWARE-MIT](LICENSE).
 
 This is an independent community marketplace, not an official OMP distribution.

@@ -73,5 +73,5 @@ Plugins are versioned independently. A new catalog entry alone does not update i
 
 When porting existing work, preserve the original license and copyright notices, link the
 upstream repository, record the source version or commit, and explain our changes. Add the
-upstream author to `AUTHORS.md`. Do not assume the marketplace's MIT license overrides a plugin's license.
+upstream author to `AUTHORS.md`. Do not assume the marketplace's root license overrides a plugin's license.
 Contributions must be compatible with the license of the files they modify.

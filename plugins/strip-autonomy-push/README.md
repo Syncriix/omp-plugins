@@ -53,4 +53,4 @@ The matching logic lives in [`src/strip.ts`](src/strip.ts), apart from the OMP e
 
 ## License
 
-[MIT](LICENSE).
+[BEERWARE-MIT](LICENSE): Beerware with the MIT warranty disclaimer.

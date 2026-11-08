@@ -3,6 +3,30 @@
 Notable user-visible changes to this marketplace and its plugins are recorded here.
 Plugins are versioned independently; refreshing the catalog does not upgrade installed code.
 
+## Licensing — 2026-11-08
+
+- The marketplace root and Strip Autonomy Push move from MIT to BEERWARE-MIT (Beerware with the MIT warranty disclaimer). Copies obtained earlier stay available under MIT.
+- Model Prompt keeps its upstream MIT license.
+
+## YouTube 0.1.0 — 2026-11-08
+
+Initial release of `youtube@syncriix`, licensed BEERWARE-MIT.
+
+### Added
+
+- `youtube_download` tool: fetches one video's transcript with yt-dlp; `video: true` also downloads the video as mp4 (H.264 where available, at most 1080p).
+- Accepts every single-video link form and bare video ids; playlist, channel and search inputs are rejected.
+- Picks subtitles in the spoken language: a manual track, then YouTube's original auto-generated track (never a machine translation), then English.
+- Transcripts in paragraphs of about 30 seconds, each stamped with its start time; rolling auto-caption repeats and word-timing tags are removed.
+- Saves to `~/downloads/youtube` by default, named `<title> [<video id>] [<omp session id>]`; raw `.vtt` files are kept only next to a downloaded video.
+- Bundled `yt` skill that points the agent at the tool, the transcript, and the no-search limit.
+- Track selection and transcript regression tests, run by the existing test workflow.
+
+### Compatibility
+
+- Requires `yt-dlp` on `PATH`, and ffmpeg to merge video and audio into mp4.
+- Verified with OMP 18.15.0 and yt-dlp 2026.08.19 on NixOS (WSL). Other OMP versions and operating systems were not runtime-tested.
+
 ## Strip Autonomy Push 0.1.0 — 2026-11-06
 
 Initial release of `strip-autonomy-push@syncriix`.
@@ -64,6 +88,7 @@ Initial public release of `model-prompt@syncriix`, an OMP adaptation of
 omp plugin marketplace update syncriix
 omp plugin upgrade model-prompt@syncriix
 omp plugin upgrade strip-autonomy-push@syncriix
+omp plugin upgrade youtube@syncriix
 ```
 
 Restart OMP after upgrading extension code. Editing prompt text requires only a new user prompt.
