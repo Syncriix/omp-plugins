@@ -1,6 +1,6 @@
 {
   "name": "@syncriix/omp-model-prompt",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Native Oh My Pi per-model prompt addenda with an interactive editor and agent tools.",
   "type": "module",
   "license": "MIT",
@@ -16,7 +16,7 @@
   "keywords": ["omp-plugin", "omp-extension", "model-prompt", "prompt"],
   "files": ["src", "LICENSE", "README.md"],
   "omp": {
-    "extensions": ["./src/index.ts"]
+    "extensions": ["./src/model-prompt.ts"]
   },
   "upstream": {
     "name": "@lukemelnik/pi-model-prompt",

@@ -30,7 +30,7 @@ node --test plugins/*/test/*.test.ts
 To load your working copy for a manual check, use the absolute path to its entrypoint:
 
 ```sh
-omp --extension /absolute/path/to/omp-plugins/plugins/model-prompt/src/index.ts
+omp --extension /absolute/path/to/omp-plugins/plugins/model-prompt/src/model-prompt.ts
 ```
 
 Use a separate test profile, such as `omp --profile plugin-dev --extension <absolute-path>`,
