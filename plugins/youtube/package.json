@@ -1,6 +1,6 @@
 {
   "name": "@syncriix/omp-youtube",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fetch YouTube transcripts as timestamped paragraphs, and videos as mp4, with yt-dlp.",
   "type": "module",
   "license": "BEERWARE-MIT",
@@ -15,7 +15,7 @@
   "keywords": ["omp-plugin", "omp-extension", "youtube", "yt-dlp", "transcript"],
   "files": ["src", "skills", "LICENSE", "README.md"],
   "omp": {
-    "extensions": ["./src/index.ts"]
+    "extensions": ["./src/youtube.ts"]
   },
   "scripts": {
     "test": "node --test test/*.test.ts"

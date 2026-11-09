@@ -33,9 +33,9 @@ Search saved model prompts, preview a selection, and press **Enter** to edit it.
 
 | Plugin | What it does | Version |
 | --- | --- | --- |
-| [**model-prompt**](plugins/model-prompt/README.md) | Browse and edit persistent Markdown instructions for each provider/model pair. | `0.2.0` |
-| [**strip-autonomy-push**](plugins/strip-autonomy-push/README.md) | Remove OMP's built-in keep-going/don't-ask lines from the main session, so the agent checks in instead of pushing on. | `0.1.0` |
-| [**youtube**](plugins/youtube/README.md) | Fetch YouTube transcripts in the spoken language as timestamped paragraphs, and videos as mp4 on request; a tiny `yt` skill tells the agent when to use it. | `0.1.0` |
+| [**model-prompt**](plugins/model-prompt/README.md) | Browse and edit persistent Markdown instructions for each provider/model pair. | `0.2.1` |
+| [**strip-autonomy-push**](plugins/strip-autonomy-push/README.md) | Remove OMP's built-in keep-going/don't-ask lines from the main session, so the agent checks in instead of pushing on. | `0.1.1` |
+| [**youtube**](plugins/youtube/README.md) | Fetch YouTube transcripts in the spoken language as timestamped paragraphs, and videos as mp4 on request; a tiny `yt` skill tells the agent when to use it. | `0.1.1` |
 
 The catalog is [`syncriix`](.omp-plugin/marketplace.json). Install identifiers use `plugin@syncriix`; scoped package names follow `@syncriix/omp-<plugin>`, such as `@syncriix/omp-model-prompt`.
 

@@ -3,6 +3,13 @@
 Notable user-visible changes to this marketplace and its plugins are recorded here.
 Plugins are versioned independently; refreshing the catalog does not upgrade installed code.
 
+## Model Prompt 0.2.1, Strip Autonomy Push 0.1.1, YouTube 0.1.1 — 2026-11-09
+
+### Fixed
+
+- Each plugin's extension entrypoint is now named after the plugin (`src/<plugin>.ts`) instead of `src/index.ts`. OMP derives the extension id from the entry path, so all three plugins were listed as `extension-module:src`: `/extensions` and `disabledExtensions` could only switch them together, never one at a time. They are now `extension-module:model-prompt`, `extension-module:strip-autonomy-push`, and `extension-module:youtube`.
+- A `disabledExtensions: [extension-module:src]` entry no longer matches these plugins; replace it with the new ids.
+
 ## Licensing — 2026-11-08
 
 - The marketplace root and Strip Autonomy Push move from MIT to BEERWARE-MIT (Beerware with the MIT warranty disclaimer). Copies obtained earlier stay available under MIT.
